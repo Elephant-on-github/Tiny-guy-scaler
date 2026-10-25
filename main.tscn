@@ -94,7 +94,6 @@ horizontal_alignment = 1
 
 [node name="Click_power" type="VBoxContainer" parent="Main/Upgrade" unique_id=1088136360]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 
 [node name="Upgrade2" type="Button" parent="Main/Upgrade/Click_power" unique_id=1013936541]
@@ -104,6 +103,40 @@ theme = ExtResource("2_0xm2m")
 text = " Click power"
 
 [node name="Cost_level_c" type="Label" parent="Main/Upgrade/Click_power" unique_id=450917377]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_0xm2m")
+text = "55"
+horizontal_alignment = 1
+
+[node name="Crit" type="VBoxContainer" parent="Main/Upgrade" unique_id=486396084]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Upgrade3" type="Button" parent="Main/Upgrade/Crit" unique_id=969417008]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_0xm2m")
+text = " Critical hit"
+
+[node name="Cost_level_crit" type="Label" parent="Main/Upgrade/Crit" unique_id=2007817991]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_0xm2m")
+text = "55"
+horizontal_alignment = 1
+
+[node name="Prestige" type="VBoxContainer" parent="Main/Upgrade" unique_id=410682072]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Upgrade4" type="Button" parent="Main/Upgrade/Prestige" unique_id=474055815]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_0xm2m")
+text = "Prestige"
+
+[node name="Cost_level_p" type="Label" parent="Main/Upgrade/Prestige" unique_id=1967879465]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("2_0xm2m")
@@ -167,5 +200,7 @@ texture = ExtResource("3_h2yge")
 
 [connection signal="pressed" from="Main/Upgrade/Clickers/Upgrade1" to="overseer" method="_on_upgrade_1_pressed"]
 [connection signal="pressed" from="Main/Upgrade/Click_power/Upgrade2" to="overseer" method="_on_upgrade_2_pressed"]
+[connection signal="pressed" from="Main/Upgrade/Crit/Upgrade3" to="overseer" method="_on_upgrade_3_pressed"]
+[connection signal="pressed" from="Main/Upgrade/Prestige/Upgrade4" to="overseer" method="_on_upgrade_4_pressed"]
 [connection signal="pressed" from="Main/Clicker" to="overseer" method="_on_clicker_pressed"]
 [connection signal="pressed" from="Start/start_Button" to="overseer" method="_on_button_pressed"]
