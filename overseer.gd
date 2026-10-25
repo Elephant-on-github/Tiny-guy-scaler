@@ -10,6 +10,9 @@ var clickers_compound : String
 var clickpowers_cost :int 
 var clickpowers_count :int
 var clickpowers_compound : String
+var time_accumulator: float = 0.0
+var click_total: int
+var agg_total : int
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -21,7 +24,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	clickpowers_compound = "level: " + str(clickpowers_count) + ", " + "cost: " + str(clickpowers_cost)
 	clickers_compound = "level: " + str(clickers_count) + ", " + "cost: " + str(clickers_cost)
 	click_power_stat.text = clickpowers_compound
@@ -29,9 +32,14 @@ func _process(_delta: float) -> void:
 	%Upgrade1.disabled = clickers_cost > total
 	%Upgrade2.disabled = clickpowers_cost > total
 	%Total.text = str(total)
-
-func spawn_confetti(spawn_position: Vector2) -> void:
-	for i in range(confetti_count):
+	time_accumulator += delta
+	if time_accumulator >= 1.0:
+		time_accumulator -= 1.0
+		agg_total = (clickpowers_count+1)*clickers_count
+		total += agg_total
+		spawn_confetti(Vector2(576,321), agg_total)
+func spawn_confetti(spawn_position: Vector2, _confetti_count) -> void:
+	for i in range(_confetti_count):
 		# 1. Create a TextureRect
 		var confetti = TextureRect.new()
 		confetti.texture = guy_texture
@@ -80,9 +88,10 @@ func _on_button_pressed() -> void:
 
 func _on_clicker_pressed() -> void:
 	total += 1
+	click_total = clickpowers_count+1
 	%Total.text = str(total)
 	var button_center = Vector2(576,321)
-	spawn_confetti(button_center)
+	spawn_confetti(button_center, click_total)
 	if unlocked_state < 1 and total >= 50:
 		%Clickers.show()
 		unlocked_state = 1
@@ -102,10 +111,10 @@ func _on_clicker_pressed() -> void:
 func _on_upgrade_2_pressed() -> void:
 	total -= clickpowers_cost
 	clickpowers_count += 1
-	clickpowers_cost = (1.1**clickpowers_count) * 50
+	clickpowers_cost = (1.3**clickpowers_count) * 50
 
 
 func _on_upgrade_1_pressed() -> void:
 	total -= clickers_cost
 	clickers_count += 1
-	clickers_cost = (1.1**clickers_count) * 20
+	clickers_cost = (1.3**clickers_count) * 20
