@@ -1,0 +1,169 @@
+[gd_scene format=3 uid="uid://cfder2ld5k1y5"]
+
+[ext_resource type="Script" uid="uid://cmchbpw8m7o7t" path="res://overseer.gd" id="1_0xm2m"]
+[ext_resource type="Theme" uid="uid://b84ppbvuv1iof" path="res://theme.tres" id="2_0xm2m"]
+[ext_resource type="Texture2D" uid="uid://dlhbiybs4wx4m" path="res://little-outline.png" id="3_h2yge"]
+
+[sub_resource type="Gradient" id="Gradient_7dm0k"]
+offsets = PackedFloat32Array(0.72590363)
+colors = PackedColorArray(0.8509804, 0.83137256, 0.84705883, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_g4v7s"]
+gradient = SubResource("Gradient_7dm0k")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yf5fn"]
+bg_color = Color(0.85882354, 0.58431375, 0.5686275, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1bvp3"]
+bg_color = Color(0.85490197, 0.85490197, 0.56078434, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h2yge"]
+bg_color = Color(0.8627451, 0.6862745, 0.5647059, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ig7tw"]
+
+[node name="Control" type="Control" unique_id=573395558]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="overseer" type="Control" parent="." unique_id=137400179]
+unique_name_in_owner = true
+z_index = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_0xm2m")
+
+[node name="Main" type="TextureRect" parent="." unique_id=1476100501]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_g4v7s")
+
+[node name="Total" type="Label" parent="Main" unique_id=1110723222]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme = ExtResource("2_0xm2m")
+theme_override_colors/font_color = Color(0.1764706, 0.15294118, 0.18431373, 1)
+theme_override_font_sizes/font_size = 64
+text = "000"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Upgrade" type="VBoxContainer" parent="Main" unique_id=1713515049]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -62.0
+offset_right = 294.0
+offset_bottom = 62.0
+grow_vertical = 2
+
+[node name="Clickers" type="VBoxContainer" parent="Main/Upgrade" unique_id=862835566]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Upgrade1" type="Button" parent="Main/Upgrade/Clickers" unique_id=1557253071]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_0xm2m")
+text = "Clickers"
+
+[node name="Cost_level" type="Label" parent="Main/Upgrade/Clickers" unique_id=467196721]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_0xm2m")
+text = "55"
+horizontal_alignment = 1
+
+[node name="Click_power" type="VBoxContainer" parent="Main/Upgrade" unique_id=1088136360]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Upgrade2" type="Button" parent="Main/Upgrade/Click_power" unique_id=1013936541]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_0xm2m")
+text = " Click power"
+
+[node name="Cost_level_c" type="Label" parent="Main/Upgrade/Click_power" unique_id=450917377]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("2_0xm2m")
+text = "55"
+horizontal_alignment = 1
+
+[node name="Clicker" type="Button" parent="Main" unique_id=2005539940]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -22.5
+offset_top = -15.5
+offset_right = 22.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0xm2m")
+theme_override_colors/font_color = Color(0.1764706, 0.15686275, 0.18039216, 1)
+theme_override_font_sizes/font_size = 96
+theme_override_styles/normal = SubResource("StyleBoxFlat_yf5fn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1bvp3")
+theme_override_styles/hover = SubResource("StyleBoxFlat_h2yge")
+text = " Click "
+
+[node name="Start" type="TextureRect" parent="." unique_id=1156323031]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_g4v7s")
+
+[node name="Button" type="Button" parent="Start" unique_id=66648166]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_0xm2m")
+theme_override_colors/font_color = Color(0.1764706, 0.15686275, 0.18039216, 1)
+theme_override_font_sizes/font_size = 128
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ig7tw")
+text = "Start"
+
+[node name="Litte_guy" type="TextureRect" parent="." unique_id=1944084068]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 128.0
+offset_bottom = 128.0
+texture = ExtResource("3_h2yge")
+
+[connection signal="pressed" from="Main/Upgrade/Clickers/Upgrade1" to="overseer" method="_on_upgrade_1_pressed"]
+[connection signal="pressed" from="Main/Upgrade/Click_power/Upgrade2" to="overseer" method="_on_upgrade_2_pressed"]
+[connection signal="pressed" from="Main/Clicker" to="overseer" method="_on_clicker_pressed"]
+[connection signal="pressed" from="Start/Button" to="overseer" method="_on_button_pressed"]
