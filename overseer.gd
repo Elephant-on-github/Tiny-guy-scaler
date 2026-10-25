@@ -131,6 +131,7 @@ func _on_clicker_pressed() -> void:
 	var button_center = Vector2(576,321)
 	_tween_button_press(%Clicker, randf_range(-8.0, 8.0))
 	spawn_confetti(button_center, click_total)
+	_spawn_float_text(button_center, "+" + str(click_total))
 	if unlocked_state < 1 and total >= 50:
 		%Clickers.show()
 		unlocked_state = 1
@@ -140,10 +141,23 @@ func _on_clicker_pressed() -> void:
 		unlocked_state = 2
 		_screenshake(get_parent().get_node("Main"), 16.0, 0.3)
 
+func _spawn_float_text(position: Vector2, text: String) -> void:
+	var label = Label.new()
+	var offset = Vector2(randf_range(-12.0, 12.0), randf_range(-8.0, 8.0))
+	var spawn_pos = position + offset
+	label.text = text
+	label.position = position
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 48)
+	#label.add_theme_color_override("font_color", Color(1, 1, 1, 1))
+	add_child(label)
 
+	var tween = create_tween()
+	tween.tween_property(label, "position", spawn_pos - Vector2(0, 160), 0.8).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.8).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(label.queue_free)
 	
-
-
+	
 # Load your custom texture or scene
 @export var guy_texture: Texture2D = preload("uid://dlhbiybs4wx4m") 
 @export var confetti_count: int = 1
