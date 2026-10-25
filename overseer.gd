@@ -19,17 +19,22 @@ func _ready() -> void:
 	%Start.visible = true
 	%Clickers.hide()
 	%Click_power.hide()
-	%Clicker.pivot_offset = %Clicker.size / 2.0
-	%Upgrade1.pivot_offset = %Upgrade1.size / 2.0
-	%Upgrade2.pivot_offset = %Upgrade2.size / 2.0
+	call_deferred("_set_button_pivots")
+	randomize()
 	
-	
-
+func _set_button_pivots() -> void:
+	if %Clicker:
+		%Clicker.pivot_offset = %Clicker.size / 2.0
+	if %Upgrade1:
+		%Upgrade1.pivot_offset = %Upgrade1.size / 2.0
+	if %Upgrade2:
+		%Upgrade2.pivot_offset = %Upgrade2.size / 2.0
+	print("Clicker pivot: ", %Clicker.pivot_offset)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	clickpowers_compound = "level: " + str(clickpowers_count) + ", " + "cost: " + str(clickpowers_cost)
-	clickers_compound = "level: " + str(clickers_count) + ", " + "cost: " + str(clickers_cost)
+	clickpowers_compound = " level: " + str(clickpowers_count) + ", " + "cost: " + str(clickpowers_cost)
+	clickers_compound = " level: " + str(clickers_count) + ", " + "cost: " + str(clickers_cost)
 	click_power_stat.text = clickpowers_compound
 	clickers_stat.text = clickers_compound
 	%Upgrade1.disabled = clickers_cost > total
@@ -40,7 +45,7 @@ func _process(delta: float) -> void:
 		time_accumulator -= 1.0
 		agg_total = (clickpowers_count+1)*clickers_count
 		total += agg_total
-		spawn_confetti(Vector2(576,321), agg_total)
+		spawn_confetti(Vector2(576,321), clampi(agg_total, 0, 20))
 func spawn_confetti(spawn_position: Vector2, _confetti_count) -> void:
 	for i in range(_confetti_count):
 		# 1. Create a TextureRect
@@ -107,7 +112,6 @@ func _on_clicker_pressed() -> void:
 	if unlocked_state < 1 and total >= 50:
 		%Clickers.show()
 		unlocked_state = 1
-
 	if unlocked_state < 2 and total >= 150:
 		%Click_power.show()
 		unlocked_state = 2
