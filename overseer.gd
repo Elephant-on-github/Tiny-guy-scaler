@@ -315,3 +315,7 @@ func _on_upgrade_3_pressed() -> void:
 	crit_multiplier = crit_multiplier * 1.05
 	crit_cost = (1.3**crit_count) * 150
 	_tween_button_press(%Upgrade3, randf_range(-4.0, 4.0))
+
+
+func _on_reset_pressed() -> void:
+	pass # Replace with function body.
