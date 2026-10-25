@@ -19,6 +19,9 @@ func _ready() -> void:
 	%Start.visible = true
 	%Clickers.hide()
 	%Click_power.hide()
+	%Clicker.pivot_offset = %Clicker.size / 2.0
+	%Upgrade1.pivot_offset = %Upgrade1.size / 2.0
+	%Upgrade2.pivot_offset = %Upgrade2.size / 2.0
 	
 	
 
@@ -80,10 +83,18 @@ func spawn_confetti(spawn_position: Vector2, _confetti_count) -> void:
 		# Clean up after animation finishes
 		tween.chain().tween_callback(confetti.queue_free)
 
+# Tween a button's rotation slightly when pressed (juicy feedback)
+func _tween_button_press(btn: Button, degrees: float = 6.0) -> void:
+	var rad = deg_to_rad(degrees)
+	var tween = create_tween()
+	# Rotate to the press angle
+	tween.tween_property(btn, "rotation", rad, 0.06).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	# Snap back to 0
+	tween.tween_property(btn, "rotation", 0.0, 0.06).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+
 
 func _on_button_pressed() -> void:
 	%Start.visible = false
-	
 
 
 func _on_clicker_pressed() -> void:
@@ -91,6 +102,7 @@ func _on_clicker_pressed() -> void:
 	click_total = clickpowers_count+1
 	%Total.text = str(total)
 	var button_center = Vector2(576,321)
+	_tween_button_press(%Clicker, randf_range(-8.0, 8.0))
 	spawn_confetti(button_center, click_total)
 	if unlocked_state < 1 and total >= 50:
 		%Clickers.show()
@@ -112,9 +124,10 @@ func _on_upgrade_2_pressed() -> void:
 	total -= clickpowers_cost
 	clickpowers_count += 1
 	clickpowers_cost = (1.3**clickpowers_count) * 50
-
+	_tween_button_press(%Upgrade2, randf_range(-5.0, 5.0))
 
 func _on_upgrade_1_pressed() -> void:
 	total -= clickers_cost
 	clickers_count += 1
 	clickers_cost = (1.3**clickers_count) * 20
+	_tween_button_press(%Upgrade1, randf_range(-5.0, 5.0))
