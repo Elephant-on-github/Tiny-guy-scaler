@@ -4,23 +4,23 @@ var total : int = 0
 var unlocked_state:int = 0
 @onready var clickers_stat : Label = %Cost_level
 @onready var click_power_stat : Label = %Cost_level_c
-var clickers_cost :int
-var clickers_count :int
+var clickers_cost :int = 20
+var clickers_count :int = 0
 var clickers_compound : String
-var clickpowers_cost :int 
-var clickpowers_count :int
+var clickpowers_cost :int = 50
+var clickpowers_count :int = 0
 var clickpowers_compound : String
 var time_accumulator: float = 0.0
-var click_total: int
-var agg_total : int
+var click_total: int = 0
+var agg_total : int = 0
 var prestige_cost :int = 10000
 
 # --- Crit settings ---
-var crit_chance: float = 0.05   # 15% chance to crit
+var crit_chance: float = 0.05
 var crit_multiplier: float = 2.0
-var crit_cost: int
+var crit_cost: int = 150
 var crit_compound: String
-var crit_count : int
+var crit_count : int = 0
 
 
 var _shake_tween: Tween
@@ -48,8 +48,18 @@ func _ready() -> void:
 	
 	call_deferred("_set_button_pivots")
 	randomize()
-	load_game() 
+	load_game()
 	
+	# Re-show panels based on loaded unlock state (fixes "things are hidden")
+	if unlocked_state >= 1:
+		%Clickers.show()
+	if unlocked_state >= 2:
+		%Click_power.show()
+	if unlocked_state >= 3:
+		%Crit.show()
+	if unlocked_state >= 4:
+		%Prestige.show()
+
 func _exit_tree() -> void:
 	save_game()
 
@@ -68,7 +78,9 @@ func save_game() -> void:
 			"prestige_cost": prestige_cost,
 			"lifetime_total": lifetime_total,
 			"crit_chance": crit_chance,
-			"crit_multiplier": crit_multiplier
+			"crit_multiplier": crit_multiplier,
+			"crit_count": crit_count,
+			"crit_cost": crit_cost
 		}
 		file.store_var(data)
 		file.close()
@@ -87,17 +99,29 @@ func load_game() -> void:
 		unlocked_state = data.get("unlocked_state", 0)
 		prestige_points = data.get("prestige_points", 0)
 		prestige_level = data.get("prestige_level", 0)
-		prestige_cost = data.get("prestige_cost", 1000)
+		prestige_cost = data.get("prestige_cost", 10000)
 		lifetime_total = data.get("lifetime_total", 0)
-		crit_chance = data.get("crit_chance", 0.15)
+		crit_chance = data.get("crit_chance", 0.05)
 		crit_multiplier = data.get("crit_multiplier", 2.0)
+		crit_count = data.get("crit_count", 0)
+		crit_cost = data.get("crit_cost", 150)
 		
-		# Refresh UI labels
+		# Refresh all UI labels
 		%Total.text = str(total)
 		clickers_compound = "level: " + str(clickers_count) + ", cost: " + str(clickers_cost)
 		clickpowers_compound = "level: " + str(clickpowers_count) + ", cost: " + str(clickpowers_cost)
+		prestige_compound = "level: " + str(prestige_level) + ", cost: " + str(prestige_cost)
+		crit_compound = "level: " + str(crit_count) + ", cost: " + str(crit_cost)
 		clickers_stat.text = clickers_compound
 		click_power_stat.text = clickpowers_compound
+		%Cost_level_crit.text = crit_compound
+		%Cost_level_p.text = prestige_compound
+		
+		# Refresh disabled states
+		%Upgrade1.disabled = clickers_cost > total
+		%Upgrade2.disabled = clickpowers_cost > total
+		%Upgrade3.disabled = crit_cost > total
+		%Upgrade4.disabled = prestige_cost > total
 
 func _set_button_pivots() -> void:
 	if %Clicker:
@@ -106,6 +130,10 @@ func _set_button_pivots() -> void:
 		%Upgrade1.pivot_offset = %Upgrade1.size / 2.0
 	if %Upgrade2:
 		%Upgrade2.pivot_offset = %Upgrade2.size / 2.0
+	if %Upgrade3:
+		%Upgrade3.pivot_offset = %Upgrade3.size / 2.0
+	if %Upgrade4:
+		%Upgrade4.pivot_offset = %Upgrade4.size / 2.0
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -119,7 +147,7 @@ func _process(delta: float) -> void:
 	%Cost_level_p.text = prestige_compound
 	%Upgrade1.disabled = clickers_cost > total
 	%Upgrade2.disabled = clickpowers_cost > total
-	%Upgrade3.disabled = clickers_cost > total
+	%Upgrade3.disabled = crit_cost > total
 	%Upgrade4.disabled = prestige_cost > total
 	%Total.text = str(total)
 	time_accumulator += delta
@@ -133,7 +161,6 @@ func _process(delta: float) -> void:
 	if autosave_timer >= AUTOSAVE_INTERVAL:
 		autosave_timer -= AUTOSAVE_INTERVAL
 		save_game()
-
 
 
 func spawn_confetti(spawn_position: Vector2, count: int, scale_mult: float = 1.0) -> void:
@@ -269,13 +296,12 @@ func _on_upgrade_1_pressed() -> void:
 	clickers_cost = (1.3**clickers_count) * 20
 	_tween_button_press(%Upgrade1, randf_range(-4.0, 4.0))
 
-
 func _on_upgrade_4_pressed() -> void:
 	if total < prestige_cost:
 		return  # not enough yet
 	
 	# Calculate prestige points gained this run
-	var gained = max(1, floor(lifetime_total / 1000))
+	var gained = max(1, int(floor(lifetime_total / 1000)))
 	
 	prestige_points += gained
 	prestige_level += 1
@@ -289,6 +315,10 @@ func _on_upgrade_4_pressed() -> void:
 	clickpowers_cost = 50
 	unlocked_state = 0
 	lifetime_total = 0
+	crit_count = 0
+	crit_chance = 0.05
+	crit_multiplier = 2.0
+	crit_cost = 150
 	
 	# Hide unlock panels again
 	%Clickers.hide()
@@ -300,10 +330,16 @@ func _on_upgrade_4_pressed() -> void:
 	%Total.text = str(total)
 	clickers_compound = "level: " + str(clickers_count) + ", cost: " + str(clickers_cost)
 	clickpowers_compound = "level: " + str(clickpowers_count) + ", cost: " + str(clickpowers_cost)
+	prestige_compound = "level: " + str(prestige_level) + ", cost: " + str(prestige_cost)
+	crit_compound = "level: " + str(crit_count) + ", cost: " + str(crit_cost)
 	clickers_stat.text = clickers_compound
 	click_power_stat.text = clickpowers_compound
+	%Cost_level_crit.text = crit_compound
+	%Cost_level_p.text = prestige_compound
 	%Upgrade1.disabled = true
 	%Upgrade2.disabled = true
+	%Upgrade3.disabled = true
+	%Upgrade4.disabled = true
 	
 	save_game()
 	_tween_button_press(%Upgrade4, randf_range(-4.0, 4.0))
@@ -318,4 +354,41 @@ func _on_upgrade_3_pressed() -> void:
 
 
 func _on_reset_pressed() -> void:
-	pass # Replace with function body.
+	# Hard reset — wipes everything including prestige and progress
+	total = 0
+	clickers_count = 0
+	clickers_cost = 20
+	clickpowers_count = 0
+	clickpowers_cost = 50
+	unlocked_state = 0
+	lifetime_total = 0
+	prestige_points = 0
+	prestige_level = 0
+	prestige_cost = 10000
+	crit_count = 0
+	crit_chance = 0.05
+	crit_multiplier = 2.0
+	crit_cost = 150
+	
+	%Clickers.hide()
+	%Click_power.hide()
+	%Crit.hide()
+	%Prestige.hide()
+	%Start.visible = true
+	
+	# Refresh UI
+	%Total.text = str(total)
+	clickers_compound = "level: " + str(clickers_count) + ", cost: " + str(clickers_cost)
+	clickpowers_compound = "level: " + str(clickpowers_count) + ", cost: " + str(clickpowers_cost)
+	prestige_compound = "level: " + str(prestige_level) + ", cost: " + str(prestige_cost)
+	crit_compound = "level: " + str(crit_count) + ", cost: " + str(crit_cost)
+	clickers_stat.text = clickers_compound
+	click_power_stat.text = clickpowers_compound
+	%Cost_level_crit.text = crit_compound
+	%Cost_level_p.text = prestige_compound
+	%Upgrade1.disabled = true
+	%Upgrade2.disabled = true
+	%Upgrade3.disabled = true
+	%Upgrade4.disabled = true
+	
+	save_game()

@@ -165,6 +165,20 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_1bvp3")
 theme_override_styles/hover = SubResource("StyleBoxFlat_h2yge")
 text = " Click "
 
+[node name="reset" type="Button" parent="Main" unique_id=1488022695]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -104.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = " reset "
+
 [node name="Start" type="TextureRect" parent="." unique_id=1156323031]
 unique_name_in_owner = true
 visible = false
@@ -203,4 +217,5 @@ texture = ExtResource("3_h2yge")
 [connection signal="pressed" from="Main/Upgrade/Crit/Upgrade3" to="overseer" method="_on_upgrade_3_pressed"]
 [connection signal="pressed" from="Main/Upgrade/Prestige/Upgrade4" to="overseer" method="_on_upgrade_4_pressed"]
 [connection signal="pressed" from="Main/Clicker" to="overseer" method="_on_clicker_pressed"]
+[connection signal="pressed" from="Main/reset" to="overseer" method="_on_reset_pressed"]
 [connection signal="pressed" from="Start/start_Button" to="overseer" method="_on_button_pressed"]
