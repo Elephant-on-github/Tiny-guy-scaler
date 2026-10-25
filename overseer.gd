@@ -29,7 +29,6 @@ func _set_button_pivots() -> void:
 		%Upgrade1.pivot_offset = %Upgrade1.size / 2.0
 	if %Upgrade2:
 		%Upgrade2.pivot_offset = %Upgrade2.size / 2.0
-	print("Clicker pivot: ", %Clicker.pivot_offset)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -88,6 +87,29 @@ func spawn_confetti(spawn_position: Vector2, _confetti_count) -> void:
 		# Clean up after animation finishes
 		tween.chain().tween_callback(confetti.queue_free)
 
+var _shake_tween: Tween
+var _shake_start : Vector2
+
+func _screenshake(target: Node, magnitude: float = 14.0, duration: float = 0.25) -> void:
+	if _shake_tween:
+		_shake_tween.kill()
+		target.position = _shake_start
+
+	var start = target.position
+	_shake_start = start
+	_shake_tween = create_tween()
+
+	# Rapid back-and-forth jitter
+	var shakes = 8
+	var step = duration / shakes
+	for i in range(shakes):
+		var off = Vector2(randf_range(-magnitude, magnitude), randf_range(-magnitude, magnitude))
+		_shake_tween.tween_property(target, "position", start + off, step).set_trans(Tween.TRANS_LINEAR)
+		if i < shakes - 1:
+			_shake_tween.tween_property(target, "position", start, step).set_trans(Tween.TRANS_LINEAR)
+
+	_shake_tween.tween_callback(func(): target.position = start)
+
 # Tween a button's rotation slightly when pressed (juicy feedback)
 func _tween_button_press(btn: Button, degrees: float = 6.0) -> void:
 	var rad = deg_to_rad(degrees)
@@ -112,9 +134,12 @@ func _on_clicker_pressed() -> void:
 	if unlocked_state < 1 and total >= 50:
 		%Clickers.show()
 		unlocked_state = 1
+		_screenshake(get_parent().get_node("Main"), 16.0, 0.3)
 	if unlocked_state < 2 and total >= 150:
 		%Click_power.show()
 		unlocked_state = 2
+		_screenshake(get_parent().get_node("Main"), 16.0, 0.3)
+
 
 	
 
